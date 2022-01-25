@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const Nav = () => {
 
     const user = useContext(UserContext)
-    console.log(user)
+    console.log('Nav', user)
     // Below we will use Link from react router to replace all of our anchor tages, we replace the href from <a> to 'to'
     return (
         <div>
@@ -18,6 +18,7 @@ const Nav = () => {
                         <div className="navbar-nav">
                             <Link className="nav-link active" aria-current="page" to="pokedex">Pokedex</Link>
                             <Link className="nav-link" to="login">Login</Link>
+                            <Link className="nav-link" to="favorites">Favorites</Link>
                         </div>
                     </div>
                 </div>
