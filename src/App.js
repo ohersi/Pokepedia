@@ -19,7 +19,7 @@ const App = () => {
         <Nav />
         {/* We need to wrap our all of our roues inside react outer 'Routes' component */}
         <Routes>
-          <Route path='login'element={<Login />}/>
+          <Route path='login' element={<Login />} />
         </Routes>
       </UserContext.Provider>
     </div>
