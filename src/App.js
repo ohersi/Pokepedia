@@ -47,7 +47,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='login' element={<Login setUser={setUser} />} />
-          <Route path='pokedex' element={<Pokedex pokeDex={pokeDex} />} />
+          <Route path='pokedex' element={<Pokedex pokeDex={pokeDex} itemsPerPage={8} />} />
         </Routes>
       </UserContext.Provider>
     </div>
