@@ -1,25 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import axios from 'axios';
 
 const Pokedex = ({ pokeDex, itemsPerPage }) => {
-    console.log('props', pokeDex)
-
-
+    // console.log('props', pokeDex)
 
     // We start with an empty list of pokeDex.
-    const [currentItems, setCurrentItems] = useState(null);
+    const [currentPokemon, setCurrentPokemon] = useState(null);
     const [pageCount, setPageCount] = useState(0);
     // Here we use item offsets; we could also use page offsets
     // following the API or data you're working with.
     const [itemOffset, setItemOffset] = useState(0);
 
     useEffect(() => {
-        // Fetch pokeDex from another resources.
-        const endOffset = itemOffset + itemsPerPage;
-        console.log(`Loading pokeDex from ${itemOffset} to ${endOffset}`);
-        setCurrentItems(pokeDex.slice(itemOffset, endOffset));
-        setPageCount(Math.ceil(pokeDex.length / itemsPerPage));
+
+
+        try {
+            // Fetch pokeDex from another resources.
+            const endOffset = itemOffset + itemsPerPage;
+            console.log(`Loading pokeDex from ${itemOffset} to ${endOffset}`);
+
+            const pokeURLs = []
+
+            for (let i = itemOffset + 1; i <= endOffset; i++) {
+                pokeURLs.push(`https://pokeapi.co/api/v2/pokemon/${i}`)
+            }
+            // console.log(pokeURLs)
+
+           currPagePokemon(pokeURLs)
+            setPageCount(Math.ceil(pokeDex.length / itemsPerPage));
+        }
+        catch (error) {
+            console.error(error)
+        }
+        finally {
+            // We need to make a conditional so our currPagePokemon() doesnt get invoked unless we have data to work with
+            if (currentPokemon) currPagePokemon();
+        }
+        
     }, [itemOffset, itemsPerPage]);
+
+    const currPagePokemon = (pokeURLs) => {
+          try {
+              
+          } catch (error) {
+              console.error(error)
+          }
+    }
 
     const Pokemon = () => {
         return (
@@ -28,7 +55,7 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
                     pokeDex &&
                     pokeDex.map(pokemon => (
                         <div>
-                            <h3>{pokemon.name}</h3>
+                            {/* <h3>{pokemon.name}</h3> */}
                         </div>
                     )
                     )
@@ -46,6 +73,7 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
         setItemOffset(newOffset);
     };
 
+    // console.log("current pokemon", currentPokemon)
     return (
         <div>
             <Pokemon />
