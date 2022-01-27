@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
+import "./styles.css"
 
 const Pokedex = ({ pokeDex, itemsPerPage }) => {
     // console.log('props', pokeDex)
@@ -14,7 +15,6 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
 
     useEffect(() => {
 
-
         try {
             // Fetch pokeDex from another resources.
             const endOffset = itemOffset + itemsPerPage;
@@ -27,8 +27,9 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
             }
             // console.log(pokeURLs)
 
-           currPagePokemon(pokeURLs)
-            setPageCount(Math.ceil(pokeDex.length / itemsPerPage));
+            currPagePokemon(pokeURLs)
+            const length = pokeDex.length ? pokeDex.length : 1118
+            setPageCount(Math.ceil(length / itemsPerPage));
         }
         catch (error) {
             console.error(error)
@@ -37,29 +38,45 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
             // We need to make a conditional so our currPagePokemon() doesnt get invoked unless we have data to work with
             if (currentPokemon) currPagePokemon();
         }
-        
+
     }, [itemOffset, itemsPerPage]);
 
     const currPagePokemon = (pokeURLs) => {
-          try {
-              
-          } catch (error) {
-              console.error(error)
-          }
+        try {
+            // axios.all() makes all concurrent requests, instead of doing indiviudals requests, we can programmatically make multiple requests
+            // If one of our Promises fails, the entire request fails
+            const pokeArr = []
+            axios.all(pokeURLs.map(async (url) => {
+                const response = await axios.get(url)
+                //   console.log('This is our axios.all response', response.data)
+                pokeArr.push(response.data)
+                setCurrentPokemon(pokeArr.flat())
+                // console.log('This is pokeArr',pokeArr)
+            }))
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const Pokemon = () => {
         return (
             <>
-                {
-                    pokeDex &&
-                    pokeDex.map(pokemon => (
-                        <div>
-                            {/* <h3>{pokemon.name}</h3> */}
-                        </div>
-                    )
-                    )
-                }
+                <div id='pokemon-container'>
+                    {
+                        currentPokemon &&
+                        currentPokemon.map(pokemon => (
+                            <div className="card poke-card" key={pokemon.id}>
+                                <img src={pokemon.sprites.front_default} className="card-img-top" alt="..." />
+                                <div className="card-body">
+                                    <h5 className="card-title">{pokemon.name}</h5>
+                                    <p className="card-text"> № {pokemon.id}</p>
+                                    <a href="#" className="btn btn-primary">Go somewhere</a>
+                                </div>
+                            </div>
+                        )
+                        )
+                    }
+                </div>
             </>
         );
     }
@@ -73,7 +90,7 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
         setItemOffset(newOffset);
     };
 
-    // console.log("current pokemon", currentPokemon)
+    console.log("current pokemon", currentPokemon)
     return (
         <div>
             <Pokemon />

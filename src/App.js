@@ -10,7 +10,7 @@ import UserContext from './contexts/UserContext';
 //Pages
 import Login from './pages/Login';
 import Home from './pages/Home';
-import Pokedex from './pages';
+import Pokedex from './pages/Pokedex';
 
 const App = () => {
   // In order for us to use context, we import first, then we can use the useContext hook to access our context
