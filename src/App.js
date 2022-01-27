@@ -11,6 +11,7 @@ import UserContext from './contexts/UserContext';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Pokedex from './pages/Pokedex';
+import Favorites from './pages/Favorites';
 
 const App = () => {
   // In order for us to use context, we import first, then we can use the useContext hook to access our context
@@ -20,6 +21,7 @@ const App = () => {
   // We will pass on our user to all of App's children via the Provider value prop
   const [user, setUser] = useState('')
   const [pokeDex, setPokeDex] = useState([])
+  const [favorite, setFavorite] = useState([])
 
   useEffect(() => {
     fetchPokemon()
@@ -30,11 +32,23 @@ const App = () => {
     try {
       const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=1118')
       setPokeDex(response.data.results)
-      
+
     }
     catch (error) {
       console.log(error)
     }
+  }
+
+  const addToFavorite = (pokemon) => {
+    // When we click like inside Pokedex, send clicked Pokemon back to App
+    //Trigger this function to update our state, App will then pass our state as props to Favorites
+    setFavorite([...favorite, pokemon])
+    console.log('we added to favorite:', favorite)
+  }
+  const removeFromFavorite = (pokemon) => {
+      const newFavArray = favorite.filter((item) => item !== pokemon)
+      setFavorite(newFavArray)
+      console.log('Removed from favorites', newFavArray)
   }
   // console.log('This is our pokedex', pokeDex)
 
@@ -47,7 +61,18 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='login' element={<Login setUser={setUser} />} />
-          <Route path='pokedex' element={<Pokedex pokeDex={pokeDex} itemsPerPage={8} />} />
+          <Route path='pokedex' element={
+            <Pokedex
+              pokeDex={pokeDex}
+              itemsPerPage={8}
+              addToFavorite={addToFavorite}
+              removeFromFavorite={removeFromFavorite}
+            />} />
+          <Route path='favorites' element={
+            <Favorites
+              favorite={favorite}
+              removeFromFavorite={removeFromFavorite}
+            />} />
         </Routes>
       </UserContext.Provider>
     </div>

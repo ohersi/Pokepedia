@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles.css'
 
+//prosp destructuring
 const Login = ({ setUser }) => {
     // Once the user clicks submit we will mimic logging in and conditionally rendering our nav bar
     const [username, setUsername] = useState('')

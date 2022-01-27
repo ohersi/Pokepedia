@@ -3,7 +3,7 @@ import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import "./styles.css"
 
-const Pokedex = ({ pokeDex, itemsPerPage }) => {
+const Pokedex = ({ pokeDex, itemsPerPage, addToFavorite }) => {
     // console.log('props', pokeDex)
 
     // We start with an empty list of pokeDex.
@@ -22,9 +22,16 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
 
             const pokeURLs = []
 
-            for (let i = itemOffset + 1; i <= endOffset; i++) {
-                pokeURLs.push(`https://pokeapi.co/api/v2/pokemon/${i}`)
+
+            for (let i = itemOffset; i < endOffset; i++) {
+                if (i < 898) {
+                    pokeURLs.push(`https://pokeapi.co/api/v2/pokemon/${i + 1}`)
+                }
+                else {
+                    pokeURLs.push(`https://pokeapi.co/api/v2/pokemon/${i + 9102}`)
+                }
             }
+
             // console.log(pokeURLs)
 
             currPagePokemon(pokeURLs)
@@ -34,11 +41,6 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
         catch (error) {
             console.error(error)
         }
-        finally {
-            // We need to make a conditional so our currPagePokemon() doesnt get invoked unless we have data to work with
-            if (currentPokemon) currPagePokemon();
-        }
-
     }, [itemOffset, itemsPerPage]);
 
     const currPagePokemon = (pokeURLs) => {
@@ -66,10 +68,18 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
                         currentPokemon &&
                         currentPokemon.map(pokemon => (
                             <div className="card poke-card" key={pokemon.id}>
-                                <img src={pokemon.sprites.front_default} className="card-img-top" alt="..." />
+                                {/* <img src={pokemon.sprites.front_default ?
+                                    pokemon.sprites.front_default :
+                                    pokemon.sprites.other['official-artwork'].front_default
+                                } className="card-img-top" alt="..." /> */}
+                                <img src={pokemon.sprites.other['official-artwork'].front_default ?
+                                    pokemon.sprites.other['official-artwork'].front_default :
+                                    pokemon.sprites.front_default
+                                } className="card-img-top" alt="..." />
                                 <div className="card-body">
                                     <h5 className="card-title">{pokemon.name}</h5>
                                     <p className="card-text"> № {pokemon.id}</p>
+                                    <button className='btn btn-danger' onClick={() => addToFavorite(pokemon)}>Like</button>
                                     <a href="#" className="btn btn-primary">Go somewhere</a>
                                 </div>
                             </div>
@@ -90,7 +100,7 @@ const Pokedex = ({ pokeDex, itemsPerPage }) => {
         setItemOffset(newOffset);
     };
 
-    console.log("current pokemon", currentPokemon)
+    // console.log("current pokemon", currentPokemon)
     return (
         <div>
             <Pokemon />
