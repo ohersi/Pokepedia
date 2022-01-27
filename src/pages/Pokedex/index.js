@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import UserContext from '../../contexts/UserContext';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import "./styles.css"
 
-const Pokedex = ({ pokeDex, itemsPerPage, addToFavorite }) => {
+const Pokedex = ({ pokeDex, itemsPerPage, addToFavorite, }) => {
     // console.log('props', pokeDex)
-
     // We start with an empty list of pokeDex.
     const [currentPokemon, setCurrentPokemon] = useState(null);
     const [pageCount, setPageCount] = useState(0);
     // Here we use item offsets; we could also use page offsets
     // following the API or data you're working with.
     const [itemOffset, setItemOffset] = useState(0);
+    const user = useContext(UserContext)
 
     useEffect(() => {
 
@@ -79,7 +80,13 @@ const Pokedex = ({ pokeDex, itemsPerPage, addToFavorite }) => {
                                 <div className="card-body">
                                     <h5 className="card-title">{pokemon.name}</h5>
                                     <p className="card-text"> № {pokemon.id}</p>
-                                    <button className='btn btn-danger' onClick={() => addToFavorite(pokemon)}>Like</button>
+                                    {
+                                        user ?
+                                        <button className='btn btn-danger' onClick={() => addToFavorite(pokemon)}>Like</button>
+                                        :
+                                        null
+                                    }
+                                    
                                     <a href="#" className="btn btn-primary">Go somewhere</a>
                                 </div>
                             </div>
